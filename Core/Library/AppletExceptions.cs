@@ -50,12 +50,23 @@ namespace Clues.Library
         public InvalidAFObjectException() : base("The parsed AF object was not of the expected type.") { }
     }
 
+    public class AFServerNotFoundException : Exception
+    {
+        public AFServerNotFoundException() : base("The AF Server could not be found") { }
+    }
+
 
     public class PIServerNotFoundException : Exception
     {
          public PIServerNotFoundException() : base("The PI Data Archive could not be found") { }
     }
     
+
+    public class InvalidParameterException : Exception
+    {
+        public InvalidParameterException(string message = null) : base( string.Format("The provided parameter is invalid. {0}",message)) { }
+    }
+
 
 
 }
