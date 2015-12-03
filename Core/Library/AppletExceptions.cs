@@ -39,6 +39,11 @@ namespace Clues.Library
         public AFElementTemplateNotFound() : base("The AF Element template was not present in the database.") { }
     }
 
+    public class AFEventFrameTemplateNotFoundException : Exception
+    {
+        public AFEventFrameTemplateNotFoundException() : base("The AF Event frame template was not present in the database.") { }
+    }
+
     public class AFTableNotFoundException : Exception
     {
         public AFTableNotFoundException() : base("AF table was not found"){}

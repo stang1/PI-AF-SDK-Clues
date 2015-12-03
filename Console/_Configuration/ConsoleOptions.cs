@@ -37,6 +37,14 @@ namespace Clues
         public AFElements AFElements { get; set; }
       
 	
+		[VerbOption("AFEventFrameCreate", HelpText = "To Create or Edit an Eventframe")]
+        public AFEventFrameCreate AFEventFrameCreate { get; set; }
+      
+	
+		[VerbOption("AFEventFramesSearch", HelpText = "Searches event frames")]
+        public AFEventFramesSearch AFEventFramesSearch { get; set; }
+      
+	
 		[VerbOption("AFGetValue", HelpText = "To get values from attribute(s) using the Path Syntax")]
         public AFGetValue AFGetValue { get; set; }
       
