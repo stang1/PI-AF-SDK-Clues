@@ -22,7 +22,7 @@ namespace Clues
     {
 
         //Command line options
-        [Option('p', "PIServer", HelpText = "PI Data Archive Server to connect to", Required = true, MutuallyExclusiveSet = "PIDataPipe")]
+        [Option('s', "PIServer", HelpText = "PI Data Archive Server to connect to", Required = true, MutuallyExclusiveSet = "PIDataPipe")]
         public string PIServerName { get; set; }
 
         [OptionList('t', "tags", HelpText = "List of tags to subscribe to.  Delimited by ',' ", Separator = ',', Required = true, MutuallyExclusiveSet = "PIDataPipe")]
