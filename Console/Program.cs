@@ -31,6 +31,7 @@ namespace Clues
             var options = new ConsoleOptions();
             
             // Parses the arguments, if the parse fails, it displays Usage information
+            // in this scenario, all options are verb options, so when a valid verb is found, the instantiated class appletbase will be passed to the OnVerbCommand method.
             Parser.Default.ParseArguments(args, options, OnVerbCommand);
 
 
