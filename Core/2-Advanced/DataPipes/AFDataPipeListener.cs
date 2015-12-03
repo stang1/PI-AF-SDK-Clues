@@ -90,7 +90,7 @@ namespace Clues
                 {
 
                     AFDatabase database;
-                    var _afConnectionManager = AfConnectionMgr.ConnectAndGetDatabase(AFServerName, AFDatabaseName,
+                    var _afConnectionManager = AfConnectionHelper.ConnectAndGetDatabase(AFServerName, AFDatabaseName,
                         out database);
 
                     // get the attributes that will be monitored

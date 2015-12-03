@@ -49,10 +49,10 @@ namespace Clues
         {
             try
             {
-                PiConnectionMgr piConnectionMgr = new PiConnectionMgr(Server);
-                piConnectionMgr.Connect();
+                PiConnectionHelper piConnectionHelper = new PiConnectionHelper(Server);
+                piConnectionHelper.Connect();
                 
-                PIServer pi = piConnectionMgr.GetPiServer();
+                PIServer pi = piConnectionHelper.GetPiServer();
 
                 List<PIPoint> points = PIPoint.FindPIPoints(pi, NameFilter,SourceFilter).ToList();
                 

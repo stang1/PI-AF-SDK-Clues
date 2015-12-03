@@ -52,7 +52,7 @@ namespace Clues
             try
             {
 
-                var connection = new AfConnectionMgr(Server, Database);
+                var connection = new AfConnectionHelper(Server, Database);
                 connection.Connect();
 
                 AFDatabase database = connection.GetDatabase();

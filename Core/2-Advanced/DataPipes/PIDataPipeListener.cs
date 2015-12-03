@@ -76,7 +76,7 @@ namespace Clues
                 {
 
                     PIServer piserver;
-                    var piConnectionManager = PiConnectionMgr.ConnectAndGetServer(PIServerName, out piserver);
+                    var piConnectionManager = PiConnectionHelper.ConnectAndGetServer(PIServerName, out piserver);
 
                     // get the tag we want to monitor  
                     var pointList = PIPoint.FindPIPoints(piserver, TagList).ToList();
