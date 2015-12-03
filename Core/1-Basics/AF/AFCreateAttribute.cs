@@ -65,7 +65,7 @@ namespace Clues
         {
             try
             {
-                // in this case the, FindObject static method will make all the connection work, and return us the element we need.
+                // in this case the, FindObject static method will make all the connection work (implicitely), and return us the element we need.
                 var element = (AFElement) PISystem.FindObject(elementPath, null);
 
                 if (element == null)
@@ -133,7 +133,11 @@ namespace Clues
                     attribute.ConfigString = value;
                     break;
 
-
+                // AFCreateAttribute -e \\tst-srv\db1\AFSDKExamples\CreateAttributes -n Attribute2 -v "Hello ;World" -t AttStringBuilder
+                case AttributeTypeEnum.AttStringBuilder:
+                    attribute.DataReferencePlugIn = piSystem.DataReferencePlugIns["String Builder"];
+                    attribute.ConfigString = value;
+                    break;
 
             }
 
