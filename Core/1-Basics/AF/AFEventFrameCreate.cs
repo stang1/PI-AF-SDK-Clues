@@ -15,6 +15,7 @@
 #endregion
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using CommandLine;
 using OSIsoft.AF;
@@ -33,10 +34,10 @@ namespace Clues
 
     [Description("To Create or Edit an Eventframe")]
     [AdditionalDescription("")]
-    [UsageExample("AFEventFrameCreate -s SRV01 -d afdatabase -n \"2015-12-03 15.35.00 EventABC\"" )]
+    [UsageExample("AFEventFrameCreate -s SRV01 -d afdatabase -n \"2015-12-03 15.35.00 EventABC\"")]
     public class AFEventFrameCreate : AppletBase
     {
-       
+
 
 
         //Command line Options
@@ -65,36 +66,39 @@ namespace Clues
             // connects to AF
             AFDatabase afDatabase;
             var afConnectionHelper = AfConnectionHelper.ConnectAndGetDatabase(Server, Database, out afDatabase);
+            CreateEventFrame(afDatabase, EFName, StartTime, EndTime, Template);
 
-             CreateEventFrame(afDatabase,EFName,StartTime,EndTime,Template);
-            
 
         }
 
 
-
-        private void CreateEventFrame(AFDatabase afDatabase,string name, string startTime=null, string endTime=null, string template = null)
+        private void CreateEventFrame(AFDatabase afDatabase, string name, string startTime = null, string endTime = null, string template = null)
         {
-            
+
             // look to get the template, if template=null then aftemplate will be null as well
-            var afTemplate = GetEventFrameTemplate(afDatabase,template);
+            var afTemplate = GetEventFrameTemplate(afDatabase, template);
 
-            var ef = new AFEventFrame(afDatabase, name, afTemplate);
-            if(!string.IsNullOrEmpty(startTime)) ef.SetStartTime(startTime);
-            if(!string.IsNullOrEmpty(endTime)) ef.SetEndTime(endTime);
+            var eventFrame = new AFEventFrame(afDatabase, name, afTemplate);
+            if (!string.IsNullOrEmpty(startTime)) eventFrame.SetStartTime(startTime);
+            if (!string.IsNullOrEmpty(endTime)) eventFrame.SetEndTime(endTime);
 
+            // when using a template, you'll want to assign a primary element to the event frame:
+            // here is an example:
+            eventFrame.PrimaryReferencedElement = null;
+            eventFrame.Description = "";
+            
 
-            // for demonstration purpose, we add some attributes to the event frame created.
-            AddAttributes(afDatabase,ef);
+            // for demonstration purpose, we add some attributes to the event frame created, only if there was no template passed.
+            if (afTemplate == null)
+                AddAttributes(afDatabase, eventFrame);
 
-
-            Logger.InfoFormat("Checking in EF: name: {0} GUID: {1}", ef.Name, ef.ID);
             // the checkin writes the event frame to the database
-            ef.CheckIn();
+            eventFrame.CheckIn();
 
-            Logger.InfoFormat("EventFrameCreated: name: {0} GUID: {1}",ef.Name,ef.ID);
+            Logger.InfoFormat("EventFrameCreated: name: {0} GUID: {1}", eventFrame.Name, eventFrame.ID);
 
         }
+
 
         private AFElementTemplate GetEventFrameTemplate(AFDatabase afDatabase, string template)
         {
@@ -113,32 +117,36 @@ namespace Clues
 
         }
 
-        private void CreateEventFrameTemplate()
+
+        private void AddAttributes(AFDatabase afDatabase, AFEventFrame eventFrame)
         {
 
-        }
+            try
+            {
+                // random number generator, to create different attributes for each event frames
+                var randomGen = new Random(DateTime.Now.Millisecond);
 
+                // creates an int attribute on the event frame
+                var attribute = eventFrame.Attributes.Add("Value1");
+                attribute.Type = typeof(int);
+                attribute.SetValue(new AFValue(randomGen.Next(10, 1000)));
 
-        private void AddAttributes(AFDatabase afDatabase,AFEventFrame eventFrame)
-        {
-            // random number generator, to create different attributes for each event frames
-            var randomGen=new Random(DateTime.Now.Millisecond);
+                // double attribute
+                attribute = eventFrame.Attributes.Add("Value2");
+                attribute.Type = typeof(double);
+                attribute.SetValue(new AFValue(randomGen.Next(10, 1000)));
 
-            // creates an int attribute on the event frame
-            var attribute = eventFrame.Attributes.Add("Value1");
-            attribute.Type = typeof(int);
-            attribute.SetValue(new AFValue(randomGen.Next(10, 1000)));
+                // here we are adding a tag that is normally present on all PI Data Archive Servers.
+                // to show how to add a PIPoint data reference attribute
+                attribute = eventFrame.Attributes.Add("Value3");
+                attribute.DataReferencePlugIn = AFDataReference.GetPIPointDataReference(afDatabase.PISystem);
+                attribute.ConfigString = @"\\optimus\sinusoid";
 
-            // double attribute
-            attribute = eventFrame.Attributes.Add("Value2");
-            attribute.Type = typeof(double);
-            attribute.SetValue(new AFValue(randomGen.Next(10,1000)));
-
-            // here we are adding a tag that is normally present on all PI Data Archive Servers.
-            // to show how to add a PIPoint data reference attribute
-            attribute = eventFrame.Attributes.Add("Value3");
-            attribute.DataReferencePlugIn = AFDataReference.GetPIPointDataReference(afDatabase.PISystem);
-            attribute.ConfigString = @"\\optimus\sinusoid";
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn("Error when adding demonstration attributes to the event frame.", ex);
+            }
         }
 
 
