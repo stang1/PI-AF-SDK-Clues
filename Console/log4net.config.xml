@@ -19,7 +19,7 @@
     </mapping>
     <mapping>
       <level value="WARN" />
-      <foreColor value="Yellow" />
+      <foreColor value="Yellow, highintensity" />
     </mapping>
     <mapping>
       <level value="ALL" />
