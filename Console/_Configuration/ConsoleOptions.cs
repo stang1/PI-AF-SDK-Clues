@@ -69,6 +69,10 @@ namespace Clues
         public PIFindPoints PIFindPoints { get; set; }
       
 	
+		[VerbOption("PIGenDataUtil", HelpText = "Utility to create tags for testing purpose.  You can also generate data into the tags for the specified time period.")]
+        public PIGenDataUtil PIGenDataUtil { get; set; }
+      
+	
 		[VerbOption("PIGetCurrentValue", HelpText = "Reads the most recent value for the specified tag.")]
         public PIGetCurrentValue PIGetCurrentValue { get; set; }
       
