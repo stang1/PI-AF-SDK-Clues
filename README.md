@@ -33,37 +33,45 @@ See section "How to add an new applet in the Visual Studio Solution?" below to g
 	Usage:
 	 clues.exe [-?] [applet [-?|options]]
 
-	  AFConnect                Connects to a PI System (AF)
+		AFConnect                Connects to a PI System (AF)
 
-	  AFCreateAttribute        Creates an AF attribute on the specified element.
-							   Supports all standard attributes.
+		AFCreateAttribute        Creates an AF attribute on the specified element.
+								 Supports all standard attributes.
 
-	  AFDataPipeListener       Illustrates the functionning of the AF Data Pipe, to
-							   get changes from AFAttributes as changes occurs
+		AFDataPipeListener       Illustrates the functionning of the AF Data Pipe, to
+								 get changes from AFAttributes as changes occurs
 
-	  AFElements               List and create elements
+		AFElements               List and create elements
 
-	  AFGetValue               To get values from attribute(s) using the Path
-							   Syntax
+		AFEventFrameCreate       To Create or Edit an Eventframe
 
-	  PIConnect                Connects to a PI Data Archive Server
+		AFEventFramesSearch      Searches event frames
 
-	  PIConnectSettings        This applet allows to change the timeouts of a PI
-							   Data Archive Connection.
+		AFGetValue               To get values from attribute(s) using the Path
+								 Syntax
 
-	  PIDataPipeListener       Illustrates the functionning of the PI Data Pipe, to
-							   get changes from PI Tags as changes occurs
+		PIConnect                Connects to a PI Data Archive Server
 
-	  PIDelete                 Deletes data in archive for specified tag(s) and for
-							   a specific time range.
+		PIConnectSettings        This applet allows to change the timeouts of a PI
+								 Data Archive Connection.
 
-	  PIFindPoints             Finds PIPoints based on tag name filter and
-							   optionally from point source.
+		PIDataPipeListener       Illustrates the functionning of the PI Data Pipe, to
+								 get changes from PI Tags as changes occurs
 
-	  PIGetCurrentValue        Reads the most recent value for the specified tag.
+		PIDelete                 Deletes data in archive for specified tag(s) and for
+								 a specific time range.
 
-	  PIGetCurrentValueBulk    Reads the most recent value for multiple tags that
-							   match the search mask.
+		PIFindPoints             Finds PIPoints based on tag name filter and
+								 optionally from point source.
+
+		PIGenDataUtil            Utility to create tags for testing purpose.  You can
+								 also generate data into the tags for the specified
+								 time period.
+
+		PIGetCurrentValue        Reads the most recent value for the specified tag.
+
+		PIGetCurrentValueBulk    Reads the most recent value for multiple tags that
+								 match the search mask.
 
 
 ### Get Help for a Specific Applet
