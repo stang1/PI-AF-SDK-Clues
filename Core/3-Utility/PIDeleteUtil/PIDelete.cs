@@ -71,7 +71,7 @@ namespace Clues
         /// <summary>
         /// Class variables
         /// </summary>
-        PiConnectionMgr piConnectionMgr = null;
+        PiConnectionHelper piConnectionHelper = null;
         DataProcessor dataEraser;
 
 
@@ -101,9 +101,9 @@ namespace Clues
             {
                 ValidateParameters();
 
-                piConnectionMgr = new PiConnectionMgr(Server);
-                piConnectionMgr.Connect();
-                PIServer server = piConnectionMgr.GetPiServer();
+                piConnectionHelper = new PiConnectionHelper(Server);
+                piConnectionHelper.Connect();
+                PIServer server = piConnectionHelper.GetPiServer();
 
                 var timer = Stopwatch.StartNew();
 

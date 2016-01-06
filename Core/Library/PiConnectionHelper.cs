@@ -23,17 +23,17 @@ using OSIsoft.AF.PI;
 namespace Clues.Library
 {
     /// <summary>
-    /// Helps managing connection to PI Server
+    /// Helps connection to PI Server
     /// </summary>
-    public class PiConnectionMgr
+    public class PiConnectionHelper
     {
-        private readonly ILog _logger = LogManager.GetLogger(typeof(PiConnectionMgr));
+        private readonly ILog _logger = LogManager.GetLogger(typeof(PiConnectionHelper));
         private readonly PIServers _piServers=new PIServers();
         private readonly PIServer _piServer;
 
-        public static PiConnectionMgr ConnectAndGetServer(string server, out PIServer piServer)
+        public static PiConnectionHelper ConnectAndGetServer(string server, out PIServer piServer)
         {
-            var manager=new PiConnectionMgr(server);
+            var manager=new PiConnectionHelper(server);
             manager.Connect();
             piServer = manager.GetPiServer();
 
@@ -52,7 +52,7 @@ namespace Clues.Library
         /// You should call the Connect method before access data with the PIServer property
         /// </summary>
         /// <param name="server">Name of the PI System (AF Server) to connect to</param>
-        public PiConnectionMgr(string server)
+        public PiConnectionHelper(string server)
         {
             // if the server does not exist in the local KST we throw an exception.  This is a choice made, you could decide to connect anyway.
             // to do so you'll need to look at the PIServers.DirectoryOptions Property: https://techsupport.osisoft.com/Documentation/PI-AF-SDK/html/P_OSIsoft_AF_PI_PIServers_DirectoryOptions.htm

@@ -39,6 +39,11 @@ namespace Clues.Library
         public AFElementTemplateNotFound() : base("The AF Element template was not present in the database.") { }
     }
 
+    public class AFEventFrameTemplateNotFoundException : Exception
+    {
+        public AFEventFrameTemplateNotFoundException() : base("The AF Event frame template was not present in the database.") { }
+    }
+
     public class AFTableNotFoundException : Exception
     {
         public AFTableNotFoundException() : base("AF table was not found"){}
@@ -50,12 +55,23 @@ namespace Clues.Library
         public InvalidAFObjectException() : base("The parsed AF object was not of the expected type.") { }
     }
 
+    public class AFServerNotFoundException : Exception
+    {
+        public AFServerNotFoundException() : base("The AF Server could not be found") { }
+    }
+
 
     public class PIServerNotFoundException : Exception
     {
          public PIServerNotFoundException() : base("The PI Data Archive could not be found") { }
     }
     
+
+    public class InvalidParameterException : Exception
+    {
+        public InvalidParameterException(string message = null) : base( string.Format("The provided parameter is invalid. {0}",message)) { }
+    }
+
 
 
 }

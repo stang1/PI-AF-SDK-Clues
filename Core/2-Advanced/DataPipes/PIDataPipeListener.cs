@@ -15,17 +15,21 @@ using OSIsoft.AF.PI;
 namespace Clues
 {
     [Description("Illustrates the functionning of the PI Data Pipe, to get changes from PI Tags as changes occurs"),
-     AdditionalDescription("Usage example: PIDataPipeListener -p SRV-PI -t sinudoid,cdt158 ")]
+    AdditionalDescription("Don't forget to stop the DataPipe gracefully by hitting a key before stopping the application.  Otherwise you may leave unwanted signups on the server."),
+    UsageExample("PIDataPipeListener -p SRV-PI -t sinudoid,cdt158")
+    ]
     public class PIDataPipeListener : AppletBase
     {
 
         //Command line options
-        [Option('p', "PIServer", HelpText = "PI Data Archive Server to connect to", Required = true, MutuallyExclusiveSet = "PIDataPipe")]
+        [Option('s', "PIServer", HelpText = "PI Data Archive Server to connect to", Required = true, MutuallyExclusiveSet = "PIDataPipe")]
         public string PIServerName { get; set; }
-
 
         [OptionList('t', "tags", HelpText = "List of tags to subscribe to.  Delimited by ',' ", Separator = ',', Required = true, MutuallyExclusiveSet = "PIDataPipe")]
         public List<string> TagList { get; set; }
+
+        [Option('i', "interval", HelpText = "Time interval at which the DataPipe will check if new data is present on the Server, in seconds", DefaultValue = 5, Required = false)]
+        public int Interval { get; set; }
 
 
 
@@ -37,6 +41,8 @@ namespace Clues
         /// </summary>  
         public override void Run()
         {
+            if (Interval <= 0)
+                throw new InvalidParameterException("Interval must be greater than 0");
 
             Task[] tasks = new[]
             {
@@ -55,23 +61,22 @@ namespace Clues
 
         private void MonitorPITags()
         {
-
             DataPipeHandler archiveDataPipeHandler = null;
             DataPipeHandler snapshotDataPipeHandler = null;
 
-            if (string.IsNullOrEmpty(PIServerName))
+            try
             {
-                _terminateRequest.WaitOne();
-            }
+                
+                if (string.IsNullOrEmpty(PIServerName))
+                {
+                    throw new PIServerNotFoundException();
+                }
 
-            else
-            {
-
-                try
+                else
                 {
 
                     PIServer piserver;
-                    var piConnectionManager = PiConnectionMgr.ConnectAndGetServer(PIServerName, out piserver);
+                    var piConnectionManager = PiConnectionHelper.ConnectAndGetServer(PIServerName, out piserver);
 
                     // get the tag we want to monitor  
                     var pointList = PIPoint.FindPIPoints(piserver, TagList).ToList();
@@ -88,35 +93,44 @@ namespace Clues
                     snapshotDataPipeHandler = new DataPipeHandler(new PIConsoleDataObserver(snapshot), snapshot);
                     snapshotDataPipeHandler.AddSignupsWithInitEvents(pointList);
 
-                    archiveDataPipeHandler.StartListening(TimeSpan.FromSeconds(5));
-                    snapshotDataPipeHandler.StartListening(TimeSpan.FromSeconds(2));
 
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex);
-                }
+                    // archive data pipe is for demonstrative use
+                    // you may only need the snapshot in your application, this depends on your use case
+                    archiveDataPipeHandler.StartListening(TimeSpan.FromSeconds(Interval));
+                    
+                    snapshotDataPipeHandler.StartListening(TimeSpan.FromSeconds(Interval));
 
-                finally
-                {
-                    // here the method will wait until a key is pressed
-                    _terminateRequest.WaitOne();
+                    Logger.InfoFormat("Listening for data changes started. Checking every {0}s", Interval);
 
-                    // in case you don't know this is called null propagation
-                    // its equivalent to if x!=null x.Dispose()
-                    archiveDataPipeHandler?.Dispose();
-                    snapshotDataPipeHandler?.Dispose();
                 }
 
             }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
 
+
+            finally
+            {
+                // here the method will wait until _terminateRequest.Set() before terminating
+                _terminateRequest.WaitOne();
+
+                // in case you don't know this is called null propagation
+                // its equivalent to if x!=null x.Dispose()
+                archiveDataPipeHandler?.Dispose();
+                snapshotDataPipeHandler?.Dispose();
+            }
 
         }
 
 
     }
 
+
 }
+
+
 
 
 

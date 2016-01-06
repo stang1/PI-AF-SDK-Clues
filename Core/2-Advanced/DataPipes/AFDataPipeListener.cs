@@ -19,8 +19,11 @@ namespace Clues
     /// AFDataPipeListener -s SRV-PI -d AFDatabase -a "Motors\Motor1|Temperature"
     /// </example>
     /// </summary>
-    [Description("Illustrates the functionning of the AF Data Pipe, to get changes from AFAttributes as changes occurs"),
-        AdditionalDescription("Usage example: AFDataPipeListener -s SRV-PI -d AFDatabase -a \"Motors\\Motor1|Temperature\"")]
+    [
+    Description("Illustrates the functionning of the AF Data Pipe, to get changes from AFAttributes as changes occurs"),
+    AdditionalDescription("Don't forget to stop the DataPipe gracefully by hitting a key before stopping the application.  Otherwise you may leave unwanted signups on the server."),
+    UsageExample("AFDataPipeListener -s SRV-PI -d AFDatabase -a \"Motors\\Motor1|Temperature\"")
+    ]
     public class AFDataPipeListener : AppletBase
     {
 
@@ -28,17 +31,19 @@ namespace Clues
         [Option('s', "AFServer", HelpText = "AF Server to connect to", Required = true)]
         public string AFServerName { get; set; }
 
-        //Command line options
         [Option('d', "database", HelpText = "AF Database to connect to", Required = true)]
         public string AFDatabaseName { get; set; }
 
         [OptionList('a', "attributes", HelpText = "list of elements to subscribe to.  Delimited by ',' ", Separator = ',', Required = true)]
         public List<string> AttributesList { get; set; }
 
+        [Option('i', "interval", HelpText = "Time interval at which the DataPipe will check if new data is present on the Server, in seconds", DefaultValue = 5, Required = false)]
+        public int Interval { get; set; }
+
         /// <summary>
         /// Private variables
         /// </summary>
-      
+
         // the manual reset event serves to transmit information to the MonitorAFAttribute task
         private ManualResetEvent _terminateRequest = new ManualResetEvent(false);
 
@@ -48,6 +53,10 @@ namespace Clues
         /// </summary>  
         public override void Run()
         {
+
+            if(Interval<=0)
+                throw new InvalidParameterException("Interval must be greater than 0");
+                
 
             Task[] tasks = new[]
             {
@@ -65,39 +74,58 @@ namespace Clues
 
         private void MonitorAFAttributes()
         {
-            
-            //connect to AF Server  
-            if (string.IsNullOrEmpty(AFServerName))
-            {
-                _terminateRequest.WaitOne();
-            }
 
-            else
+            DataPipeHandler afDataPipeHandler = null;
+
+            try
             {
 
-                AFDatabase database;
-                var _afConnectionManager = AfConnectionMgr.ConnectAndGetDatabase(AFServerName, AFDatabaseName, out database);
+                //connect to AF Server  
+                if (string.IsNullOrEmpty(AFServerName))
+                {
+                    throw new AFServerNotFoundException();
+                }
 
-                // get the attributes that will be monitored
-                IDictionary<string, string> findAttributesErrors;
-                var attributes = AFAttribute.FindAttributesByPath(AttributesList, database, out findAttributesErrors);
+                else
+                {
 
-                // in case there was errors in the search we display them
-                if (findAttributesErrors != null && findAttributesErrors.Count > 0)
-                    findAttributesErrors.ToList().ForEach(e => Logger.ErrorFormat("{0},{1}", e.Key, e.Value));
+                    AFDatabase database;
+                    var _afConnectionManager = AfConnectionHelper.ConnectAndGetDatabase(AFServerName, AFDatabaseName,
+                        out database);
 
-                var afDataPipeHandler = new DataPipeHandler(new AFConsoleDataObserver());
-                afDataPipeHandler.AddSignupsWithInitEvents(attributes);
+                    // get the attributes that will be monitored
+                    IDictionary<string, string> findAttributesErrors;
+                    var attributes = AFAttribute.FindAttributesByPath(AttributesList, database, out findAttributesErrors);
 
-                afDataPipeHandler.StartListening(TimeSpan.FromSeconds(5));
+                    // in case there was errors in the search we display them
+                    if (findAttributesErrors != null && findAttributesErrors.Count > 0)
+                        findAttributesErrors.ToList().ForEach(e => Logger.ErrorFormat("{0},{1}", e.Key, e.Value));
 
-                // here the method will wait until a key is pressed
-                _terminateRequest.WaitOne();
 
-                afDataPipeHandler.Dispose();
+                    afDataPipeHandler = new DataPipeHandler(new AFConsoleDataObserver());
+                    afDataPipeHandler.AddSignupsWithInitEvents(attributes);
+
+                    afDataPipeHandler.StartListening(TimeSpan.FromSeconds(Interval));
+
+                    Logger.InfoFormat("Listening for data changes started. Checking every {0}s", Interval);
+
+                }
+
             }
 
 
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
+
+            finally
+            {
+                _terminateRequest.WaitOne();
+
+                // null propagation operator, this is same as x!=null x.Dispose()
+                afDataPipeHandler?.Dispose();
+            }
 
         }
 

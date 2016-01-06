@@ -33,17 +33,17 @@ namespace Clues.Library
     /// </remarks>
     /// <see cref="https://pisquare.osisoft.com/message/29669#29669"/>
     /// </summary>
-    public class AfConnectionMgr
+    public class AfConnectionHelper
     {
-        private readonly ILog _logger = LogManager.GetLogger(typeof(AfConnectionMgr));
+        private readonly ILog _logger = LogManager.GetLogger(typeof(AfConnectionHelper));
         private readonly PISystems _piSystems=new PISystems();
         private readonly PISystem _piSystem;
         private AFDatabase _afDatabase;
         private string _databaseName;
 
-        public static AfConnectionMgr ConnectAndGetDatabase(string server, string databaseName, out AFDatabase database)
+        public static AfConnectionHelper ConnectAndGetDatabase(string server, string databaseName, out AFDatabase database)
         {
-            var manager=new AfConnectionMgr(server,databaseName);
+            var manager=new AfConnectionHelper(server,databaseName);
             manager.Connect();
             database=manager.GetDatabase();
             return manager;
@@ -77,7 +77,7 @@ namespace Clues.Library
         /// </summary>
         /// <param name="server">Name of the PI System (AF Server) to connect to</param>
         /// <param name="databaseName">Name of the AF DatabaseName to connect to</param>
-        public AfConnectionMgr(string server, string databaseName=null)
+        public AfConnectionHelper(string server, string databaseName=null)
         {
 
             if (_piSystems.Contains(server))

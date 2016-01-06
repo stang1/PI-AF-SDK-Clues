@@ -38,10 +38,10 @@ namespace Clues
         {
             try
             {
-                PiConnectionMgr piConnectionMgr = new PiConnectionMgr(Server);
-                piConnectionMgr.Connect();
+                PiConnectionHelper piConnectionHelper = new PiConnectionHelper(Server);
+                piConnectionHelper.Connect();
 
-                PIServer pi = piConnectionMgr.GetPiServer();
+                PIServer pi = piConnectionHelper.GetPiServer();
 
                 PIPointList pointList = new PIPointList(PIPoint.FindPIPoints(pi, TagMask));
 

@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="1-Basics\AF\AFEventFrameCreate.cs" />
+    <Compile Include="1-Basics\AF\AFEventFramesSearch.cs" />
     <Compile Include="1-Basics\AF\AFGetValue.cs" />
     <Compile Include="1-Basics\AF\AFCreateAttribute.cs" />
     <Compile Include="1-Basics\AF\AFElements.cs" />
@@ -63,10 +65,12 @@
     <Compile Include="1-Basics\PIDataArchive\PIFindPoints.cs" />
     <Compile Include="1-Basics\PIDataArchive\PIGetCurrentValue.cs" />
     <Compile Include="1-Basics\PIDataArchive\PIGetCurrentValueBulk.cs" />
+    <Compile Include="3-Utility\PITestDataUtil\PIGenDataUtil.cs" />
+    <Compile Include="3-Utility\PITestDataUtil\DataGenerator.cs" />
     <Compile Include="Library\AppletExceptions.cs" />
     <Compile Include="Library\Helpers.cs" />
-    <Compile Include="Library\PiConnectionMgr.cs" />
-    <Compile Include="Library\AfConnectionMgr.cs" />
+    <Compile Include="Library\PiConnectionHelper.cs" />
+    <Compile Include="Library\AfConnectionHelper.cs" />
     <Compile Include="Library\Workers\DataProcessor.cs" />
     <Compile Include="_Configuration\CustomAttributes\UsageExampleAttribute.cs" />
     <Compile Include="_Configuration\CustomAttributes\AdditionalDescriptionAttribute.cs" />
