@@ -29,6 +29,10 @@ namespace Clues
         public AFCreateAttribute AFCreateAttribute { get; set; }
       
 	
+		[VerbOption("AFCreateDatabase", HelpText = "Creates a new AF Database")]
+        public AFCreateDatabase AFCreateDatabase { get; set; }
+      
+	
 		[VerbOption("AFDataPipeListener", HelpText = "Illustrates the functionning of the AF Data Pipe, to get changes from AFAttributes as changes occurs")]
         public AFDataPipeListener AFDataPipeListener { get; set; }
       
