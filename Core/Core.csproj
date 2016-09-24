@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="1-Basics\AF\AFCreateDatabase.cs" />
     <Compile Include="1-Basics\AF\AFEventFrameCreate.cs" />
     <Compile Include="1-Basics\AF\AFEventFramesSearch.cs" />
     <Compile Include="1-Basics\AF\AFGetValue.cs" />
