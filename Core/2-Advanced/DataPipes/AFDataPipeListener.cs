@@ -44,7 +44,9 @@ namespace Clues
         /// Private variables
         /// </summary>
 
-        // the manual reset event serves to transmit information to the MonitorAFAttribute task
+        // the manual reset event serves to transmit information that the application is terminating
+        // this is required for a command line application, but could also be necessary with an application that runs this code in a 
+        // separate task, to sync the operations.
         private ManualResetEvent _terminateRequest = new ManualResetEvent(false);
 
         /// <summary>  
